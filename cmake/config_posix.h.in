@@ -35,4 +35,6 @@ typedef pthread_once_t  once_flag;
 #define ONCE_FLAG_INIT      PTHREAD_ONCE_INIT
 #define TSS_DTOR_ITERATIONS PTHREAD_DESTRUCTOR_ITERATIONS
 
+#cmakedefine THRD_HAVE_TIMESPEC_GET
+
 #endif  // THRD_POSIX_H

@@ -1,5 +1,6 @@
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
+include(CheckCSourceCompiles)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -73,4 +74,19 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_L
   target_compile_options(thrd_compile_dependency INTERFACE 
 		"$<$<COMPILE_LANGUAGE:CXX>:-Wno-missing-field-initializers>"
 	)
+endif()
+
+# Check if timespec_get is available in the current C standard mode.
+# This is necessary because timespec_get is a C11 function, and when compiling
+# in C99 mode, it may not be exposed by the system headers even if the C library
+# provides it.
+check_c_source_compiles("
+#include <time.h>
+int main(void) {
+  struct timespec ts;
+  return timespec_get(&ts, TIME_UTC) != TIME_UTC;
+}
+" HAVE_TIMESPEC_GET)
+if(HAVE_TIMESPEC_GET)
+  set(THRD_HAVE_TIMESPEC_GET ON CACHE INTERNAL "timespec_get available in current build configuration")
 endif()

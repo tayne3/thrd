@@ -40,9 +40,10 @@ typedef struct {
 #define ONCE_FLAG_INIT      {0}
 #define TSS_DTOR_ITERATIONS 4
 
+#cmakedefine THRD_HAVE_TIMESPEC_GET
+
 // timespec definition for non-UCRT
 #ifndef _UCRT
-#define THRD_NO_TIMESPEC_GET
 #ifndef _TIMESPEC_DEFINED
 #ifdef _USE_32BIT_TIME_T
 struct timespec {
