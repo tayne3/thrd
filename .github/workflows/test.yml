@@ -271,8 +271,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # AppleClang - Intel (x64)
-          - { os: macos-13, compiler: appleclang, build_type: Release }
           # AppleClang - Apple Silicon (arm64)
           - { os: macos-14, compiler: appleclang, build_type: Release }
           - { os: macos-14, compiler: appleclang, build_type: Debug }
