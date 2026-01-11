@@ -5,65 +5,65 @@
 [![Tag](https://img.shields.io/github/v/tag/tayne3/thrd?color=%23ff8936&style=flat-square&logo=git&logoColor=white)](https://github.com/tayne3/thrd/tags)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tayne3/thrd)
 
-**English** | [中文](README_zh.md)
+[English](README.md) | **中文**
 
-This library implements the C11 threads API (`<threads.h>`) on top of native platform threading primitives. It's designed to enable the use of C11 threading in C99 environments while maintaining compatibility with older compilers. This is **not** a drop-in replacement for C11's `<threads.h>`, but provides an equivalent API with the same function signatures and semantics.
+本库基于原生平台线程原语实现了 C11 线程 API（`<threads.h>`）。它旨在让 C99 环境也能使用 C11 线程功能，同时保持对旧版本编译器的兼容性。这**不是** C11 `<threads.h>` 的完全替代品，但提供了一个具有相同函数签名和语义的等效 API。
 
-The library has been tested on POSIX systems (macOS, Linux) and Windows. Contributions for additional platforms are welcome.
-
----
-
-## Supported Platforms
-
-The following platforms are supported:
-
-- **Windows Vista / Server 2008 or later**
-
-  - Uses native Vista+ APIs: `CONDITION_VARIABLE`, `CRITICAL_SECTION`, `InitOnceExecuteOnce`, `FlsAlloc`
-  - Supports MSVC, MinGW, Clang-cl
-  - Does **not** support Windows XP or earlier
-
-- **POSIX Systems**
-  - macOS, Linux, BSD, and other POSIX-compliant systems
-  - Uses pthreads (`pthread_create`, `pthread_mutex_*`, `pthread_cond_*`, etc.)
-  - Supports GCC, Clang, and other POSIX-compatible compilers
+该库已在 POSIX 系统（macOS、Linux）和 Windows 上进行了测试。欢迎为其他平台贡献代码。
 
 ---
 
-## Implementation Details
+## 支持的平台
+
+目前支持以下平台：
+
+- **Windows Vista / Server 2008 或更高版本**
+
+  - 使用原生 Vista+ API：`CONDITION_VARIABLE`、`CRITICAL_SECTION`、`InitOnceExecuteOnce`、`FlsAlloc`
+  - 支持 MSVC、MinGW、Clang-cl
+  - **不支持** Windows XP 或更早版本
+
+- **POSIX 系统**
+  - macOS、Linux、BSD 及其他符合 POSIX 标准的系统
+  - 使用 pthreads（`pthread_create`、`pthread_mutex_*`、`pthread_cond_*` 等）
+  - 支持 GCC、Clang 和其他兼容 POSIX 的编译器
+
+---
+
+## 实现细节
 
 ### Windows (Win32)
 
-The Win32 implementation uses modern Vista+ APIs for optimal performance:
+Win32 实现采用现代 Vista+ API 以获得最佳性能：
 
-- **Threads**: `_beginthreadex` / `_endthreadex` (CRT-safe)
-- **Mutexes**: `CRITICAL_SECTION` (always recursive)
-- **Condition Variables**: `CONDITION_VARIABLE` (native Vista+ support)
-- **Thread-Specific Storage**: `FlsAlloc` / `FlsSetValue` (with destructor support)
-- **One-time Initialization**: `InitOnceExecuteOnce`
+- **线程 (Threads)**: `_beginthreadex` / `_endthreadex`（CRT 安全）
+- **互斥锁 (Mutexes)**: `CRITICAL_SECTION`（始终是递归的）
+- **条件变量 (Condition Variables)**: `CONDITION_VARIABLE`（原生 Vista+ 支持）
+- **线程特定存储 (Thread-Specific Storage)**: `FlsAlloc` / `FlsSetValue`（支持析构函数）
+- **单次初始化 (One-time Initialization)**: `InitOnceExecuteOnce`
 
 ### POSIX
 
-The POSIX implementation is a thin wrapper around pthreads:
+POSIX 实现是对 pthreads 的薄封装：
 
-- Direct mapping to `pthread_*` functions
-- **macOS Special Handling**: `mtx_timedlock` uses polling emulation (macOS lacks `pthread_mutex_timedlock`)
-- Proxy function for `thrd_create` to safely convert return types
+- 直接映射到 `pthread_*` 函数
+- **macOS 特殊处理**: 由于 macOS 缺少 `pthread_mutex_timedlock`，`mtx_timedlock` 使用轮询模拟实现
+- `thrd_create` 的代理函数，用于安全地转换返回类型
 
 ---
 
-## Usage
+## 使用方法
 
-### CMake Integration
+### CMake 集成
 
-Add the library to your project:
+将本库添加到您的项目中：
 
 ```cmake
 add_subdirectory(thrd)
 target_link_libraries(my_app PRIVATE thrd::thrd)
 ```
 
-### Basic Example
+### 基础示例
 
 ```c
 #include <thrd/thrd.h>
@@ -88,7 +88,7 @@ int main(void) {
 }
 ```
 
-### Advanced Example
+### 进阶示例
 
 ```c
 #include <thrd/thrd.h>
@@ -135,9 +135,9 @@ int main(void) {
 
 ---
 
-## API Reference
+## API 参考
 
-The library implements all C11 threads API functions with identical signatures:
+本库实现了所有 C11 线程 API 函数，具有完全相同的签名：
 
 ```
 +---------------------------+---------------------------+
@@ -189,34 +189,34 @@ The library implements all C11 threads API functions with identical signatures:
 +---------------------------+---------------------------+
 ```
 
-- `timespec_get` is only provided on platforms lacking native support (e.g., older MSVC).
+- `timespec_get` 仅在缺少原生支持的平台（例如旧版 MSVC）上提供。
 
 ---
 
-## Differences With C11
+## 与 C11 的区别
 
-While the API is designed to match C11 `<threads.h>` as closely as possible, there are some platform-specific behavioral differences:
+虽然 API 旨在尽可能贴合 C11 `<threads.h>`，但在不同平台上仍存在一些行为差异：
 
-### Windows-Specific Behavior
+### Windows 特定行为
 
-1. **Mutex Recursion**: Windows `CRITICAL_SECTION` is always recursive. Both `mtx_plain` and `mtx_recursive` behave identically on Windows (a thread can lock the same mutex multiple times without deadlock).
+1. **互斥锁递归**: Windows `CRITICAL_SECTION` 始终是递归的。在 Windows 上，`mtx_plain` 和 `mtx_recursive` 的行为完全一致（同一个线程可以多次锁定同一个互斥锁而不会死锁）。
 
-2. **Mutex Types**: The `mtx_timed` flag is accepted but has no special effect on Windows (all mutexes support timed operations).
+2. **互斥锁类型**: `mtx_timed` 标志会被接受，但在 Windows 上没有特殊效果（所有互斥锁都支持定时操作）。
 
-### POSIX-Specific Behavior
+### POSIX 特定行为
 
-1. **macOS Timed Mutex**: On macOS, `mtx_timedlock` is emulated using polling with `pthread_mutex_trylock` because macOS lacks `pthread_mutex_timedlock`.
+1. **macOS 定时互斥锁**: 在 macOS 上，由于缺少 `pthread_mutex_timedlock`，`mtx_timedlock` 使用 `pthread_mutex_trylock` 进行轮询模拟。
 
-### General Notes
+### 通用注意事项
 
-- Function signatures and return values match C11 exactly
-- All type definitions (`thrd_t`, `mtx_t`, `cnd_t`, etc.) are compatible with C11
-- Error codes (`thrd_success`, `thrd_error`, etc.) match C11 values
+- 函数签名和返回值与 C11 完全一致
+- 所有类型定义（`thrd_t`、`mtx_t`、`cnd_t` 等）均与 C11 兼容
+- 错误代码（`thrd_success`、`thrd_error` 等）与 C11 的值匹配
 
 ---
 
-## Requirements
+## 环境要求
 
-- **C99 Compiler**: The library requires C99 or later
-- **Windows**: Windows Vista / Server 2008 or later
-- **POSIX**: Any system with pthreads support
+- **C99 编译器**: 本库要求 C99 或更高版本
+- **Windows**: Windows Vista / Server 2008 或更高版本
+- **POSIX**: 任何支持 pthreads 的系统
