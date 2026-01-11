@@ -113,7 +113,7 @@ jobs:
           -G "Unix Makefiles"
           -DCMAKE_C_COMPILER=${{ matrix.compiler }}-${{ matrix.version }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DTHRD_BUILD_SHARED=ON
+          -DTHRD_BUILD_SHARED=OFF
           -DTHRD_BUILD_TEST=ON
 
       - name: Build
@@ -171,7 +171,7 @@ jobs:
           cmake -S . -B build
           -G "${{ matrix.generator }}"
           ${{ matrix.toolset && format('-T {0}', matrix.toolset) || '' }}
-          -DTHRD_BUILD_SHARED=ON
+          -DTHRD_BUILD_SHARED=OFF
           -DTHRD_BUILD_TEST=ON
         shell: bash
 
@@ -211,7 +211,7 @@ jobs:
           cmake -S . -B build
           -G "MinGW Makefiles"
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DTHRD_BUILD_SHARED=ON
+          -DTHRD_BUILD_SHARED=OFF
           -DTHRD_BUILD_TEST=ON
 
       - name: Build
@@ -250,7 +250,7 @@ jobs:
           cmake -S . -B build
           -G "Unix Makefiles"
           -DCMAKE_BUILD_TYPE=Release
-          -DTHRD_BUILD_SHARED=ON
+          -DTHRD_BUILD_SHARED=OFF
           -DTHRD_BUILD_TEST=ON
 
       - name: Build
@@ -300,7 +300,7 @@ jobs:
           ${{ matrix.cc && format('-DCMAKE_C_COMPILER={0}', matrix.cc) || '' }}
           ${{ matrix.cxx && format('-DCMAKE_CXX_COMPILER={0}', matrix.cxx) || '' }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DTHRD_BUILD_SHARED=ON
+          -DTHRD_BUILD_SHARED=OFF
           -DTHRD_BUILD_TEST=ON
 
       - name: Build
