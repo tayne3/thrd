@@ -40,8 +40,9 @@ typedef struct {
 #define ONCE_FLAG_INIT      {0}
 #define TSS_DTOR_ITERATIONS 4
 
-#cmakedefine HAVE_TIMESPEC_GET
+#cmakedefine THRD_USE_NATIVE
 #cmakedefine HAVE_TIMESPEC
+#cmakedefine HAVE_TIMESPEC_GET
 
 #ifdef _MSC_VER
 #ifndef _UCRT

@@ -11,7 +11,11 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/ProjectConfig.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/CPM.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/SetupThread.cmake)
 
-if(THRD_BUILD_SHARED)
+if(THRD_USE_NATIVE)
+  add_library(thrd_native INTERFACE)
+  set(THRD_TARGET thrd_native)
+  message(STATUS "thrd: Using system <threads.h>")
+elseif(THRD_BUILD_SHARED)
   add_library(thrd_shared SHARED)
   set(THRD_TARGET thrd_shared)
   message(STATUS "thrd v${THRD_VERSION} shared library")
@@ -22,46 +26,48 @@ else()
 endif()
 add_library(thrd::thrd ALIAS ${THRD_TARGET})
 
-target_link_libraries(${THRD_TARGET} PRIVATE thrd_compile_dependency)
-target_include_directories(${THRD_TARGET} PUBLIC 
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-if(THRD_BACKEND_WIN32)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config_win32.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_config.h @ONLY)
-  target_sources(${THRD_TARGET} PRIVATE 
-    src/win32/thread.c
-    src/win32/mutex.c
-    src/win32/cond.c
-    src/win32/tss.c
-    src/win32/call_once.c
-    src/win32/time.c
+if(NOT THRD_USE_NATIVE)
+  target_link_libraries(${THRD_TARGET} PRIVATE thrd_compile_dependency)
+  target_include_directories(${THRD_TARGET} PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    $<INSTALL_INTERFACE:include>
   )
-else()
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config_posix.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_config.h @ONLY)
-  target_sources(${THRD_TARGET} PRIVATE 
-    src/posix/thread.c
-    src/posix/mutex.c
-    src/posix/cond.c
-    src/posix/tss.c
-    src/posix/call_once.c
-    src/posix/time.c
+
+  if(THRD_BACKEND_WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config_win32.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_config.h @ONLY)
+    target_sources(${THRD_TARGET} PRIVATE 
+      src/win32/thread.c
+      src/win32/mutex.c
+      src/win32/cond.c
+      src/win32/tss.c
+      src/win32/call_once.c
+      src/win32/time.c
+    )
+  else()
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config_posix.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_config.h @ONLY)
+    target_sources(${THRD_TARGET} PRIVATE 
+      src/posix/thread.c
+      src/posix/mutex.c
+      src/posix/cond.c
+      src/posix/tss.c
+      src/posix/call_once.c
+      src/posix/time.c
+    )
+  endif()
+
+  include(GenerateExportHeader)
+  generate_export_header(${THRD_TARGET}
+    BASE_NAME thrd
+    EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_export.h
+  )
+
+  install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_config.h
+    ${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_export.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thrd
   )
 endif()
-
-include(GenerateExportHeader)
-generate_export_header(${THRD_TARGET}
-	BASE_NAME thrd
-	EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_export.h
-)
-
-install(FILES
-	${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_config.h
-	${CMAKE_CURRENT_BINARY_DIR}/include/thrd/thrd_export.h
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/thrd
-)
 
 if(THRD_BUILD_TEST)
   CPMAddPackage(

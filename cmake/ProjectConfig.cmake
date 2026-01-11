@@ -2,6 +2,7 @@ include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 include(CheckCSourceCompiles)
 include(CheckStructHasMember)
+include(CMakePushCheckState)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -85,3 +86,25 @@ int main(void) {
   return timespec_get(&ts, TIME_UTC) != TIME_UTC;
 }
 " HAVE_TIMESPEC_GET)
+
+cmake_push_check_state(RESET)
+set(CMAKE_REQUIRED_FLAGS "${CMAKE_C_FLAGS}")
+
+check_c_source_compiles("
+#include <threads.h>
+int func(void *arg) { (void)arg; return 0; }
+int main(void) {
+    thrd_t t;
+    mtx_t m;
+    cnd_t c;
+    if (thrd_create(&t, func, 0) != thrd_success) return 1;
+    thrd_join(t, 0);
+    mtx_init(&m, mtx_plain);
+    mtx_destroy(&m);
+    cnd_init(&c);
+    cnd_destroy(&c);
+    return 0;
+}
+" THRD_USE_NATIVE)
+
+cmake_pop_check_state()

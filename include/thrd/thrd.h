@@ -24,6 +24,10 @@
 #ifndef THRD_THRD_H
 #define THRD_THRD_H
 
+#ifdef THRD_USE_NATIVE
+#include <threads.h>
+#else
+
 #include <stddef.h>
 #include <thrd/thrd_config.h>
 #include <thrd/thrd_export.h>
@@ -79,6 +83,8 @@ THRD_EXPORT int timespec_get(struct timespec *ts, int base);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif /* THRD_THRD_H */
