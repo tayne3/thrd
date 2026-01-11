@@ -19,7 +19,6 @@ else()
   add_library(thrd_static STATIC)
   set(THRD_TARGET thrd_static)
   message(STATUS "thrd v${THRD_VERSION} static library")
-  target_compile_definitions(thrd_static PUBLIC THRD_STATIC)
 endif()
 add_library(thrd::thrd ALIAS ${THRD_TARGET})
 
