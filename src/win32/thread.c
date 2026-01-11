@@ -2,10 +2,10 @@
 #include <thrd/thrd.h>
 
 #define WIN32_LEAN_AND_MEAN
-#include <process.h> /* for _beginthreadex */
+#include <process.h>
 #include <windows.h>
 
-#include "thrd_win32_internal.h"
+#include "internal.h"
 
 struct _thrd_start_param {
 	thrd_start_t func;

@@ -73,7 +73,7 @@ THRD_EXPORT void *tss_get(tss_t key);
 
 THRD_EXPORT void call_once(once_flag *flag, void (*func)(void));
 
-#ifndef THRD_HAVE_TIMESPEC_GET
+#ifndef HAVE_TIMESPEC_GET
 THRD_EXPORT int timespec_get(struct timespec *ts, int base);
 #endif
 

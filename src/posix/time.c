@@ -1,6 +1,6 @@
 #include <thrd/thrd.h>
 
-#ifndef THRD_HAVE_TIMESPEC_GET
+#ifndef HAVE_TIMESPEC_GET
 #include <sys/time.h>
 int timespec_get(struct timespec *ts, int base) {
 	struct timeval tv;

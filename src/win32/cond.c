@@ -2,7 +2,7 @@
 #include <thrd/thrd.h>
 #include <windows.h>
 
-#include "thrd_win32_internal.h"
+#include "internal.h"
 
 int cnd_init(cnd_t *cond) {
 	PCONDITION_VARIABLE cv;

@@ -2,7 +2,7 @@
 #include <thrd/thrd.h>
 #include <windows.h>
 
-#include "thrd_win32_internal.h"
+#include "internal.h"
 
 /*
  * TSS Key Registry

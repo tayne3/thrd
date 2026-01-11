@@ -2,7 +2,7 @@
 #include <thrd/thrd.h>
 #include <windows.h>
 
-#include "thrd_win32_internal.h"
+#include "internal.h"
 
 int _thrd_win32_timespec_to_ms(const struct timespec *ts, DWORD *ms) {
 	if (ts->tv_sec < 0 || ts->tv_nsec < 0 || ts->tv_nsec >= 1000000000) {
