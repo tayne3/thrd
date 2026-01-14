@@ -68,12 +68,6 @@ else()
 endif()
 
 if(THRD_BUILD_TEST)
-  CPMAddPackage(
-    NAME cunit
-    URL "https://codeload.github.com/tayne3/cunit/tar.gz/refs/tags/v0.2.5"
-    URL_HASH "SHA256=73429bf8bc733ce5431b012689e56f9d255bab3d6d1ac745311f81514b322186"
-    OPTIONS "BUILD_SHARED_LIBS OFF"
-  )
   enable_testing()
   add_subdirectory(test)
 endif()
