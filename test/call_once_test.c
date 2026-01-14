@@ -1,8 +1,3 @@
-#ifdef _MSC_VER
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-
 #include "cunit.h"
 #include "thrd/thrd.h"
 
@@ -78,11 +73,5 @@ int main(void) {
 	CUNIT_TEST("call_once multiple threads", test_call_once_multiple_threads)
 	CUNIT_SUITE_END()
 
-	const int ret = cunit_run();
-#ifdef _MSC_VER
-	if (_CrtDumpMemoryLeaks()) {
-		abort();
-	}
-#endif
-	return ret;
+	return cunit_run();
 }

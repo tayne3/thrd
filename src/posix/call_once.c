@@ -1,5 +1,3 @@
-#ifndef _WIN32
-
 #include <thrd/thrd.h>
 
 void call_once(once_flag *flag, void (*func)(void)) {
@@ -7,5 +5,3 @@ void call_once(once_flag *flag, void (*func)(void)) {
 		return;
 	pthread_once(flag, func);
 }
-
-#endif /* !_WIN32 */

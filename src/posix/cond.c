@@ -1,7 +1,3 @@
-#ifndef _WIN32
-
-#include <errno.h>
-#include <stdlib.h>
 #include <thrd/thrd.h>
 
 int cnd_init(cnd_t *cond) {
@@ -40,15 +36,11 @@ int cnd_wait(cnd_t *cond, mtx_t *mtx) {
 
 int cnd_timedwait(cnd_t *cond, mtx_t *mtx, const struct timespec *ts) {
 	int res;
-
 	if (!cond || !mtx || !ts) {
 		return thrd_error;
 	}
-
 	if ((res = pthread_cond_timedwait(cond, mtx, ts)) != 0) {
 		return res == ETIMEDOUT ? thrd_timedout : thrd_error;
 	}
 	return thrd_success;
 }
-
-#endif /* !_WIN32 */

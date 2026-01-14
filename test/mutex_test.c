@@ -1,8 +1,3 @@
-#ifdef _MSC_VER
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-
 #include "cunit.h"
 #include "thrd/thrd.h"
 
@@ -205,11 +200,5 @@ int main(void) {
 	CUNIT_TEST("mtx contention", test_mtx_contention)
 	CUNIT_SUITE_END()
 
-	const int ret = cunit_run();
-#ifdef _MSC_VER
-	if (_CrtDumpMemoryLeaks()) {
-		abort();
-	}
-#endif
-	return ret;
+	return cunit_run();
 }

@@ -1,6 +1,3 @@
-#ifndef _WIN32
-
-#include <errno.h>
 #include <sched.h>
 #include <stdlib.h>
 #include <thrd/thrd.h>
@@ -22,12 +19,14 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
 	struct thrd_start_param *p;
 	int                      res;
 
-	if (!thr || !func)
+	if (!thr || !func) {
 		return thrd_error;
+	}
 
 	p = (struct thrd_start_param *)malloc(sizeof(*p));
-	if (!p)
+	if (!p) {
 		return thrd_nomem;
+	}
 
 	p->func = func;
 	p->arg  = arg;
@@ -68,12 +67,14 @@ int thrd_equal(thrd_t a, thrd_t b) {
 }
 
 int thrd_sleep(const struct timespec *ts_in, struct timespec *rem_out) {
-	if (!ts_in)
+	if (!ts_in) {
 		return -2;
+	}
 
 	if (nanosleep(ts_in, rem_out) < 0) {
-		if (errno == EINTR)
+		if (errno == EINTR) {
 			return -1;
+		}
 		return -2;
 	}
 	return 0;
@@ -82,5 +83,3 @@ int thrd_sleep(const struct timespec *ts_in, struct timespec *rem_out) {
 void thrd_yield(void) {
 	sched_yield();
 }
-
-#endif /* !_WIN32 */

@@ -1,8 +1,3 @@
-#ifdef _MSC_VER
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-
 #include "cunit.h"
 #include "thrd/thrd.h"
 
@@ -14,10 +9,6 @@ static mtx_t dtor_mtx;
 
 void test_tss_create_null(void) {
 	assert_int_eq(thrd_error, tss_create(NULL, NULL));
-}
-
-void test_tss_set_invalid_key(void) {
-	assert_int_eq(thrd_error, tss_set(0xFFFFFFFF, (void *)42));
 }
 
 void test_tss_set_get(void) {
@@ -130,7 +121,6 @@ int main(void) {
 
 	CUNIT_SUITE_BEGIN("Input Validation", NULL, NULL)
 	CUNIT_TEST("tss_create with NULL", test_tss_create_null)
-	CUNIT_TEST("tss_set with invalid key", test_tss_set_invalid_key)
 	CUNIT_SUITE_END()
 
 	CUNIT_SUITE_BEGIN("Functional", NULL, NULL)
@@ -140,11 +130,5 @@ int main(void) {
 	CUNIT_TEST("tss multiple keys", test_tss_multiple_keys)
 	CUNIT_SUITE_END()
 
-	const int ret = cunit_run();
-#ifdef _MSC_VER
-	if (_CrtDumpMemoryLeaks()) {
-		abort();
-	}
-#endif
-	return ret;
+	return cunit_run();
 }

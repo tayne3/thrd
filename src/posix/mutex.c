@@ -1,5 +1,3 @@
-#ifndef _WIN32
-
 #include <errno.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -19,8 +17,9 @@ int mtx_init(mtx_t *mtx, int type) {
 	int                 res;
 	pthread_mutexattr_t attr;
 
-	if (!mtx)
+	if (!mtx) {
 		return thrd_error;
+	}
 
 	pthread_mutexattr_init(&attr);
 
@@ -41,21 +40,24 @@ int mtx_init(mtx_t *mtx, int type) {
 }
 
 void mtx_destroy(mtx_t *mtx) {
-	if (mtx)
+	if (mtx) {
 		pthread_mutex_destroy(mtx);
+	}
 }
 
 int mtx_lock(mtx_t *mtx) {
-	if (!mtx)
+	if (!mtx) {
 		return thrd_error;
+	}
 	return pthread_mutex_lock(mtx) == 0 ? thrd_success : thrd_error;
 }
 
 int mtx_trylock(mtx_t *mtx) {
 	int res;
 
-	if (!mtx)
+	if (!mtx) {
 		return thrd_error;
+	}
 
 	res = pthread_mutex_trylock(mtx);
 	if (res == EBUSY) {
@@ -67,8 +69,9 @@ int mtx_trylock(mtx_t *mtx) {
 int mtx_timedlock(mtx_t *mtx, const struct timespec *ts) {
 	int res = 0;
 
-	if (!mtx || !ts)
+	if (!mtx || !ts) {
 		return thrd_error;
+	}
 
 #ifdef THRD_NO_TIMED_MUTEX
 	/* fake a timedlock by polling trylock in a loop */
@@ -96,9 +99,8 @@ int mtx_timedlock(mtx_t *mtx, const struct timespec *ts) {
 }
 
 int mtx_unlock(mtx_t *mtx) {
-	if (!mtx)
+	if (!mtx) {
 		return thrd_error;
+	}
 	return pthread_mutex_unlock(mtx) == 0 ? thrd_success : thrd_error;
 }
-
-#endif /* !_WIN32 */

@@ -22,8 +22,9 @@ tasks:
       - |
         cmake -S . -B {{.BUILD_DIR}} \
           -DCMAKE_BUILD_TYPE={{.BUILD_TYPE}} \
+          {{if .BUILD_SHARED_LIBS}}-DBUILD_SHARED_LIBS={{.BUILD_SHARED_LIBS}}{{end}} \
           {{if .THRD_BUILD_TEST}}-DTHRD_BUILD_TEST={{.THRD_BUILD_TEST}}{{end}} \
-          {{if .THRD_BUILD_SHARED}}-DTHRD_BUILD_SHARED={{.THRD_BUILD_SHARED}}{{end}} \
+          {{if .THRD_USE_NATIVE}}-DTHRD_USE_NATIVE={{.THRD_USE_NATIVE}}{{end}} \
           {{if .BUILD_ARGS}}{{.BUILD_ARGS}}{{end}}
 
   build:
@@ -33,7 +34,12 @@ tasks:
       BUILD_TYPE: '{{.BUILD_TYPE | default "Release"}}'
       BUILD_DIR: "cmake-build-{{.BUILD_TYPE | lower}}"
       PARALLEL_JOBS:
-        sh: nproc 2>/dev/null || echo 1
+        sh: |
+          {{if eq OS "windows"}}
+          echo ${NUMBER_OF_PROCESSORS}
+          {{else}}
+          nproc 2>/dev/null || echo 1
+          {{end}}
     cmds:
       - cmake --build {{.BUILD_DIR}} --config {{.BUILD_TYPE}} --parallel {{.PARALLEL_JOBS}}
 
@@ -46,7 +52,9 @@ tasks:
     deps:
       - task: build
     cmds:
-      - ctest --test-dir {{.BUILD_DIR}} -C {{.BUILD_TYPE}} --output-on-failure
+      - |
+        cd {{.BUILD_DIR}}
+        ctest -C {{.BUILD_TYPE}} --output-on-failure
 
   clean:
     desc: Clean the build directory

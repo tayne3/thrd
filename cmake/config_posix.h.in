@@ -21,10 +21,19 @@
  *    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *    SOFTWARE.
  */
-#ifndef THRD_POSIX_H
-#define THRD_POSIX_H
+#ifndef THRD_CONFIG_POSIX_H
+#define THRD_CONFIG_POSIX_H
 
 #include <pthread.h>
+
+#cmakedefine THRD_USE_NATIVE
+#cmakedefine THRD_SUPPORT_NATIVE
+#cmakedefine THRD_HAVE_TIMESPEC
+#cmakedefine THRD_HAVE_TIMESPEC_GET
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef pthread_t       thrd_t;
 typedef pthread_mutex_t mtx_t;
@@ -35,7 +44,7 @@ typedef pthread_once_t  once_flag;
 #define ONCE_FLAG_INIT      PTHREAD_ONCE_INIT
 #define TSS_DTOR_ITERATIONS PTHREAD_DESTRUCTOR_ITERATIONS
 
-#cmakedefine THRD_USE_NATIVE
-#cmakedefine HAVE_TIMESPEC_GET
-
-#endif  // THRD_POSIX_H
+#ifdef __cplusplus
+}
+#endif
+#endif  // THRD_CONFIG_POSIX_H
