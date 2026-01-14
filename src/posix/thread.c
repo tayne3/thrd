@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <sched.h>
 #include <stdlib.h>
 #include <thrd/thrd.h>

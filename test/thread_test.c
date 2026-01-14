@@ -88,8 +88,7 @@ void test_thrd_sleep(void) {
 	assert_int_eq(0, thrd_sleep(&dur, NULL));
 	timespec_get(&end, TIME_UTC);
 
-	long elapsed_ns = (end.tv_sec - start.tv_sec) * 1000000000L + (end.tv_nsec - start.tv_nsec);
-	assert_true(elapsed_ns >= 50000000L);
+	assert_int64_le(50000000L, (end.tv_sec - start.tv_sec) * 1000000000L + (end.tv_nsec - start.tv_nsec));
 }
 
 void test_thrd_yield(void) {

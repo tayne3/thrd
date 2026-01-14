@@ -1,3 +1,5 @@
+#include <errno.h>
+#include <stdlib.h>
 #include <thrd/thrd.h>
 
 int cnd_init(cnd_t *cond) {
