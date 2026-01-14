@@ -33,14 +33,15 @@ static void tss_registry_ensure_init(void) {
 void _thrd_win32_tss_register(tss_t key, tss_dtor_t dtor) {
 	struct tss_entry *entry;
 
-	if (!dtor)
+	if (!dtor) {
 		return; /* No destructor, no need to track */
-
+	}
 	tss_registry_ensure_init();
 
 	entry = (struct tss_entry *)malloc(sizeof(*entry));
-	if (!entry)
+	if (!entry) {
 		return;
+	}
 
 	entry->key  = key;
 	entry->dtor = dtor;
@@ -96,8 +97,9 @@ void _thrd_win32_tss_cleanup(void) {
 		}
 		LeaveCriticalSection(&tss_registry_lock);
 
-		if (!had_value)
+		if (!had_value) {
 			break;
+		}
 	}
 }
 

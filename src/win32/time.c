@@ -5,15 +5,16 @@
 #include "internal.h"
 
 int _thrd_win32_timespec_to_ms(const struct timespec *ts, DWORD *ms) {
+	if (!ts) {
+		return 0;
+	}
 	if (ts->tv_sec < 0 || ts->tv_nsec < 0 || ts->tv_nsec >= 1000000000) {
 		return 0;
 	}
-
 	if (ts->tv_sec > INT_MAX / 1000) {
 		*ms = INFINITE;
 		return 1;
 	}
-
 	*ms = (DWORD)ts->tv_sec * 1000 + (DWORD)(ts->tv_nsec + 999999) / 1000000;
 	return 1;
 }
@@ -22,6 +23,10 @@ DWORD _thrd_win32_util_timepoint_to_ms(const struct timespec *ts_abs, int *clamp
 	struct timespec now;
 	struct timespec diff;
 	DWORD           ms;
+
+	if (!ts_abs) {
+		return 0;
+	}
 
 	*clamped = 0;
 	timespec_get(&now, TIME_UTC);
@@ -54,6 +59,9 @@ int timespec_get(struct timespec *ts, int base) {
 	FILETIME       ft;
 	ULARGE_INTEGER li;
 
+	if (!ts) {
+		return 0;
+	}
 	if (base != TIME_UTC) {
 		return 0;
 	}

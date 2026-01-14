@@ -15,11 +15,9 @@ void _thrd_win32_tss_register(tss_t key, tss_dtor_t dtor);
 void _thrd_win32_tss_unregister(tss_t key);
 
 typedef struct {
-	long          lock_status; /* 0: unlocked, 1: locked, -1: contended */
-	int           recursive_count;
-	int           type;
-	unsigned long owner_id;
-	void         *event;
+	CRITICAL_SECTION cs;
+	int              type;
+	int              count;
 } impl_thrd_mutex_t;
 
 #endif

@@ -26,7 +26,7 @@
 
 #include "thrd/thrd_config.h"
 
-#if defined(THRD_USE_NATIVE) && (THRD_SUPPORT_NATIVE)
+#if defined(THRD_USE_NATIVE) && defined(THRD_SUPPORT_NATIVE)
 #include <threads.h>
 #else
 
@@ -104,4 +104,4 @@ THRD_API int timespec_get(struct timespec *ts, int base);
 
 #endif
 
-#endif // THRD_THRD_H
+#endif  // THRD_THRD_H
