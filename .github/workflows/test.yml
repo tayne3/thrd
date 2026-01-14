@@ -133,7 +133,7 @@ jobs:
   # Windows - MSVC, Clang-CL, MinGW Testing
   # ═══════════════════════════════════════════════════════════════════════════
   test-windows:
-    name: Windows ${{ matrix.compiler }} (${{ matrix.build_type }})
+    name: ${{ matrix.os }} - ${{ matrix.generator }} (${{ matrix.build_type }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
 
@@ -198,7 +198,7 @@ jobs:
   # Windows - MinGW Testing (POSIX backend on Windows)
   # ═══════════════════════════════════════════════════════════════════════════
   test-windows-mingw:
-    name: Windows MinGW (${{ matrix.build_type }})
+    name: ${{ matrix.os }} - MinGW (${{ matrix.build_type }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
 
