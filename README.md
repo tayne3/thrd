@@ -11,6 +11,10 @@ This library implements the C11 threads API (`<threads.h>`) on top of native pla
 
 The library has been tested on POSIX systems (macOS, Linux) and Windows. Contributions for additional platforms are welcome.
 
+## Limitations
+
+- **`thread_local` Keyword**: This library implements the function API but **cannot** provide the `thread_local` (or `_Thread_local`) keyword, as this is a compiler feature. Please use the `tss_*` functions for portable thread-local storage, or use compiler-specific equivalents (e.g., `__declspec(thread)` on MSVC).
+
 ---
 
 ## Supported Platforms
@@ -37,7 +41,7 @@ The following platforms are supported:
 The Win32 implementation uses modern Vista+ APIs for optimal performance:
 
 - **Threads**: `_beginthreadex` / `_endthreadex` (CRT-safe)
-- **Mutexes**: `CRITICAL_SECTION` (always recursive)
+- **Mutexes**: `CRITICAL_SECTION` (with emulation for non-recursive `mtx_trylock` and polling for `mtx_timedlock`)
 - **Condition Variables**: `CONDITION_VARIABLE` (native Vista+ support)
 - **Thread-Specific Storage**: `FlsAlloc` / `FlsSetValue` (with destructor support)
 - **One-time Initialization**: `InitOnceExecuteOnce`
@@ -199,9 +203,9 @@ While the API is designed to match C11 `<threads.h>` as closely as possible, the
 
 ### Windows-Specific Behavior
 
-1. **Mutex Recursion**: Windows `CRITICAL_SECTION` is always recursive. Both `mtx_plain` and `mtx_recursive` behave identically on Windows (a thread can lock the same mutex multiple times without deadlock).
+1. **Mutex Recursion**: Windows `CRITICAL_SECTION` is natively recursive. However, `mtx_trylock` explicitly checks and returns `thrd_busy` if a thread attempts to recursively lock an `mtx_plain` mutex, matching C11 semantics. `mtx_lock` remains recursive for `mtx_plain` to handle Undefined Behavior safely.
 
-2. **Mutex Types**: The `mtx_timed` flag is accepted but has no special effect on Windows (all mutexes support timed operations).
+2. **Timed Mutexes**: Since `CRITICAL_SECTION` does not support timed waits, `mtx_timedlock` is implemented using a polling strategy (spin-wait with sleep) on Windows.
 
 ### POSIX-Specific Behavior
 

@@ -11,6 +11,10 @@
 
 该库已在 POSIX 系统（macOS、Linux）和 Windows 上进行了测试。欢迎为其他平台贡献代码。
 
+## 已知限制
+
+- **`thread_local` 关键字**: 本库仅实现了 C11 线程 API 函数，**无法**模拟 `thread_local` (或 `_Thread_local`) 关键字，因为这是编译器层面的特性。建议使用本库提供的 `tss_*` 函数实现可移植的线程局部存储，或使用编译器特定的扩展（如 MSVC 的 `__declspec(thread)`）。
+
 ---
 
 ## 支持的平台
