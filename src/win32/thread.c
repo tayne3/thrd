@@ -1,9 +1,6 @@
+#include <process.h>
 #include <stdlib.h>
 #include <thrd/thrd.h>
-
-#define WIN32_LEAN_AND_MEAN
-#include <process.h>
-#include <windows.h>
 
 #include "internal.h"
 

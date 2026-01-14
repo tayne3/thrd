@@ -2,6 +2,14 @@
 #define THRD_WIN32_INTERNAL_H
 
 #include <thrd/thrd.h>
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef WIN64_LEAN_AND_MEAN
+#define WIN64_LEAN_AND_MEAN
+#endif
+
 #include <windows.h>
 
 int   _thrd_win32_timespec_to_ms(const struct timespec *ts, DWORD *ms);

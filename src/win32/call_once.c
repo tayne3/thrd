@@ -1,5 +1,6 @@
 #include <thrd/thrd.h>
-#include <windows.h>
+
+#include "internal.h"
 
 static BOOL CALLBACK _thrd_once_proxy(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *Context) {
 	void (*func)(void) = (void (*)(void))Parameter;

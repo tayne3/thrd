@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <thrd/thrd.h>
-#include <windows.h>
 
 #include "internal.h"
 
