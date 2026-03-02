@@ -1,6 +1,4 @@
-# Detect Backend
 include_guard(GLOBAL)
-
 include(CheckLibraryExists)
 
 # ------------------------------------------------------------------------------

@@ -29,6 +29,7 @@ TEST_CASE("tss_set and tss_get", "[functional]") {
 }
 
 static void dtor_func(void *arg) {
+	(void)arg;
 	mtx_lock(&dtor_mtx);
 	dtor_called++;
 	mtx_unlock(&dtor_mtx);
@@ -78,12 +79,8 @@ TEST_CASE("tss isolation between threads", "[functional]") {
 
 	REQUIRE(tss_create(&shared_tss, NULL) == thrd_success);
 
-	for (int i = 0; i < NUM_THREADS; i++) {
-		REQUIRE(thrd_create(threads + i, isolation_thread_func, (void *)(size_t)(i + 1)) == thrd_success);
-	}
-	for (int i = 0; i < NUM_THREADS; i++) {
-		REQUIRE(thrd_join(threads[i], NULL) == thrd_success);
-	}
+	for (int i = 0; i < NUM_THREADS; i++) { REQUIRE(thrd_create(threads + i, isolation_thread_func, (void *)(size_t)(i + 1)) == thrd_success); }
+	for (int i = 0; i < NUM_THREADS; i++) { REQUIRE(thrd_join(threads[i], NULL) == thrd_success); }
 
 	tss_delete(shared_tss);
 }
